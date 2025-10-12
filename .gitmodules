@@ -1,0 +1,4 @@
+[submodule "evalap"]
+	path = evalap
+	url = git@github.com:boehm-e/evalap.git
+	branch = llm_structured_output

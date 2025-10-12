@@ -1,0 +1,53 @@
+services:
+  postgres:
+    image: postgres:16.5
+    container_name: evalap-postgres
+    restart: always
+    user: postgres
+    environment:
+      - TZ=Europe/Paris
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=evalap
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "-U", "postgres"]
+      interval: 4s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  evalap:
+    build:
+      context: ./evalap
+      dockerfile: Dockerfile
+    container_name: evalap-app
+    restart: always
+    environment:
+      - TZ=Europe/Paris
+      - ENV=${ENV:-dev}
+      - DB_NAME=${DB_NAME:-evalap}
+      - POSTGRES_URL=${POSTGRES_URL:-postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/evalap}
+      - ADMIN_TOKEN=${ADMIN_TOKEN}
+      - MFS_API_KEY_V2=${MFS_API_KEY_V2}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - MISTRAL_API_KEY=${MISTRAL_API_KEY}
+      - ALBERT_API_KEY=${ALBERT_API_KEY}
+    ports:
+      - "8000:8000"   # API
+      - "8501:8501"   # Streamlit UI
+      - "3000:3000"   # Docs (if needed)
+    volumes:
+      - evalap_data:/data
+    command: ["supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+  evalap_data:
