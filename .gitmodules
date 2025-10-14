@@ -2,3 +2,6 @@
 	path = evalap
 	url = git@github.com:boehm-e/evalap.git
 	branch = llm_structured_output
+[submodule "notebooks/2d-doc-dataset/tdd"]
+	path = notebooks/2d-doc-dataset/tdd
+	url = git@github.com:nipo/tdd.git
