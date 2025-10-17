@@ -37,6 +37,8 @@ services:
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
       - MISTRAL_API_KEY=${MISTRAL_API_KEY}
       - ALBERT_API_KEY=${ALBERT_API_KEY}
+      - LABEL_STUDIO_URL=http://172.17.0.1:8081
+      - LABEL_STUDIO_API_KEY=${LABEL_STUDIO_API_KEY}
     ports:
       - "8000:8000"   # API
       - "8501:8501"   # Streamlit UI
